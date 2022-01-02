@@ -1,0 +1,41 @@
+body {
+  background-color: bisque;
+}
+
+.timer {
+  display: flex;
+  justify-content: center;
+}
+
+.timer__field {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.inteface-timer {
+  width: 350px;
+  height: 100px;
+  border-radius: 3px;
+  background-color: rgb(27, 93, 179);
+  margin: 0 auto;
+  margin-top: 200px;
+  transition: background-color 250ms linear;
+}
+
+.inteface-timer:hover {
+  background-color: lightcoral;
+}
+
+.input {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+button {
+  margin-left: 10px;
+  background-color: rgb(68, 68, 124);
+  color: aliceblue;
+  border: inherit;
+  width: 50px;
+}
