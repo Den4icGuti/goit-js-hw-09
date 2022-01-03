@@ -1,35 +1,49 @@
 import flatpickr from "flatpickr";
+import { Notify } from "notiflix";
+import 'flatpickr/dist/flatpickr.min.css';
 
 const ref = {
-  input: document.querySelector('#datetime-picker'),
-  btnStart: document.querySelector('button[data-start]'),
-  day: document.querySelector('span[data-days]'),
-  hours: document.querySelector('span[data-hours]'),
-  min: document.querySelector('span[data-minutes]'),
-  sec:document.querySelector('span[data-seconds]')
+  inputRef: document.querySelector('#datetime-picker'),
+  btnStartRef: document.querySelector('button[data-start]'),
+  timerRef:document.querySelector('.timer'),
+  dayRef: document.querySelector('span[data-days]'),
+  hourRef: document.querySelector('span[data-hours]'),
+  minRef: document.querySelector('span[data-minutes]'),
+  secRef:document.querySelector('span[data-seconds]')
 }
 
-const { input, btnStart, day, hours, min, sec } = ref;
+const { inputRef, btnStartRef, dayRef, hourRef, minRef, secRef } = ref;
+btnStartRef.disabled = true;
+ btnStartRef.classList.add('disabled')
+
+let useDate = null
 
 const INTERVAL__TIME = 1000;
 
-class Timer { 
-  constructor() { 
-    this.intrvalId = null;
-    this.isActive = false;
-    this.onTick = onTick
-  };
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+ console.log(selectedDates[0]);
 
-  start() { 
-    if (this.isActive) { 
-      return;
+    if (selectedDates[0] < Date.now()) {
+      Notify.failure("Please choose a date in the future");
+    } else { 
+      btnStartRef.classList.remove('disabled');
+      btnStartRef.disabled = false;
+
+      useDate = selectedDates[0];
     }
-  }
-}
+  },
+};
 
-const timer = new Timer({
-  onTick:convertMs
-})
+// console.log(options)
+
+function pad(value) { 
+  return String(value).padStart(2, '0');
+}
 
 
 function convertMs(ms) {
@@ -40,13 +54,13 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = Math.floor(ms / day);
+  const days = pad(Math.floor(ms / day));
   // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
+  const hours = pad(Math.floor((ms % day) / hour));
   // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const minutes = pad(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
 
   return { days, hours, minutes, seconds };
 }
@@ -54,3 +68,43 @@ function convertMs(ms) {
 // console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
 // console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
 // console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
+
+
+class Timer { 
+  constructor() { 
+    this.isActive = false;
+    this.timerId = null;
+    btnStartRef.disabled = true;
+  }
+
+  start() { 
+    if (this.isActive) { 
+      return;
+    }
+    this.isActive = true;
+    this.timerId = setInterval(() => {
+      const currentTime = new Date();
+      const deltaTime = useDate - currentTime;
+      const element = convertMs(deltaTime);
+
+      dayRef.textContent = element.days;
+      hourRef.textContent = element.hours;
+      minRef.textContent = element.minutes;
+      secRef.textContent = element.seconds;
+      
+       if (deltaTime < 0) { 
+        this.stop();
+        timer.innerHTML = 'Time is over!';
+      }
+    }, INTERVAL__TIME);
+
+  };
+   
+  stop() { 
+    clearInterval(this.timerId)
+  }
+}
+ 
+flatpickr(inputRef, options)
+const timer = new Timer();
+btnStartRef.addEventListener('click', () => timer.start())

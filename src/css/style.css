@@ -34,8 +34,13 @@ body {
 
 button {
   margin-left: 10px;
-  background-color: rgb(68, 68, 124);
+  background-color: rgb(53, 116, 81);
   color: aliceblue;
   border: inherit;
   width: 50px;
+}
+
+.disabled {
+  background-color: rgb(102, 40, 40);
+  color: chocolate;
 }
