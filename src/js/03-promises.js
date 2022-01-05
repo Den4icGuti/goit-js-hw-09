@@ -22,9 +22,9 @@ function onFormSubmit(e) {
       });
     step += delay;
   }
+}
 
-
-  function createPromise(position, delay) {
+function createPromise(position, delay) {
     const shouldResolve = Math.random() > 0.3;
  
     const valueP = { position, delay };
@@ -37,8 +37,5 @@ function onFormSubmit(e) {
     })
 
   }
-}
-
-
 
 
